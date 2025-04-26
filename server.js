@@ -11,7 +11,7 @@ import fsExtra from 'fs-extra';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 10000;
+const port = process.env.PORT || 8080; // Changed port to 8080 for Render compatibility
 
 app.use(express.json());
 
