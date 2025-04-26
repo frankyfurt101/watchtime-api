@@ -7,7 +7,6 @@ import { fileURLToPath } from 'url';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 // Needed to resolve __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -55,6 +54,8 @@ app.get('/summary', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`🚀 Server running at http://localhost:${port}`);
+const PORT = process.env.PORT || 10000;
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
