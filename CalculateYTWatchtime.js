@@ -1,47 +1,33 @@
-import { createReadStream } from 'fs';
-import { parser } from 'stream-json';
-import { streamArray } from 'stream-json/streamers/StreamArray';
+import pkg from 'stream-json';
+const { parser } = pkg;
 
-async function processWatchHistory() {
-  return new Promise((resolve, reject) => {
-    const creatorStats = {};
-    let totalVideos = 0;
+import streamArrayPkg from 'stream-json/streamers/StreamArray.js';
+const { StreamArray } = streamArrayPkg;
 
-    const jsonStream = createReadStream('src/data/watch-history.json')
-      .pipe(parser())
-      .pipe(streamArray());
+import { readFile } from 'fs/promises';
+import path from 'path';
+import express from 'express';
 
-    jsonStream.on('data', ({ value }) => {
-      if (value.subtitles && value.subtitles.length > 0) {
-        const creator = value.subtitles[0].name;
-        creatorStats[creator] = (creatorStats[creator] || 0) + 1;
-      }
-      totalVideos++;
-    });
+const app = express();
+const PORT = process.env.PORT || 10000;
 
-    jsonStream.on('end', () => {
-      const topCreators = Object.entries(creatorStats)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([name, count]) => `${name}: ${count} videos`)
-        .join('\n');
+// Serve JSON summary
+app.get('/summary', async (req, res) => {
+  try {
+    const summaryPath = path.join(__dirname, 'src', 'data', 'watchtime_summary.json');
+    const jsonData = await readFile(summaryPath, 'utf-8');
+    const summary = JSON.parse(jsonData);
+    res.json(summary);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      res.status(404).json({ message: "📊 No watchtime summary available yet. Try running a calculation first." });
+    } else {
+      console.error('Error reading summary:', err);
+      res.status(500).json({ message: "⚠️ Server error occurred." });
+    }
+  }
+});
 
-      const summary = `✅ Watchtime Summary:\n\nTotal Videos Watched: ${totalVideos}\n\nTop 5 Creators:\n${topCreators}`;
-      resolve(summary);
-    });
-
-    jsonStream.on('error', (err) => {
-      reject(err);
-    });
-  });
-}
-
-processWatchHistory()
-  .then(summary => {
-    console.log(summary);
-    // You can also write it to a file here if needed
-    // fs.writeFileSync('src/data/watchtime_summary.txt', summary, 'utf8');
-  })
-  .catch(err => {
-    console.error('Error processing watch history:', err);
-  });
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
