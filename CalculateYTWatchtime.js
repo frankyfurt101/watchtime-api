@@ -82,7 +82,7 @@ function convertISO8601DurationToSeconds(duration) {
 // Main async function
 (async () => {
     try {
-        const data = fs.readFileSync('/Users/frankyfernandez/Desktop/Youtube Project/watch-history.json', 'utf8');
+        const data = fs.readFileSync(new URL('./data/watch-history.json', import.meta.url), 'utf8');
         const watchHistory = JSON.parse(data);
 
         if (!Array.isArray(watchHistory) || watchHistory.length === 0) {
