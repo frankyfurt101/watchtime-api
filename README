@@ -1,0 +1,40 @@
+# 🚀 Watchtime API
+
+Welcome to **Watchtime API** — a blazing fast backend server built with **Express.js** for analyzing your YouTube Watch History!
+
+---
+
+## 📈 Live URL
+
+▶️ [Visit the Live API](https://watchtime-api-ndt4.onrender.com)
+
+---
+
+## ⚙️ Features
+
+- Health check (`/health`) endpoint ✅
+- Analyze your **watch-history.json** 📚
+- Shows total videos watched 🎥
+- Displays your **Top Creator** 📈
+- Clean custom landing page 🌌
+- Deployed automatically via Render 🚀
+
+---
+
+## 🛠 Tech Stack
+
+- Node.js 22
+- Express.js
+- GitHub Actions (auto-deploy)
+- Render Web Service Hosting
+- Git for version control
+
+---
+
+## 🚧 Local Development
+
+```bash
+git clone https://github.com/frankyfurt101/watchtime-api.git
+cd watchtime-api
+npm install
+npm start
