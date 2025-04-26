@@ -63,6 +63,7 @@ app.post('/run-watchtime', async (req, res) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
+        timeout: 10000 // Timeout of 10 seconds
       }
     );
 
