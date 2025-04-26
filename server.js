@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
   res.send('🎬 Welcome to the YouTube Watchtime API!');
 });
 
-// Quick Health Check - SwiftUI friendly
+// Quick Health Check for /run-watchtime GET
 app.get('/run-watchtime', async (req, res) => {
   try {
     res.status(200).json({ message: '✅ API is alive!' });
@@ -30,7 +30,7 @@ app.get('/run-watchtime', async (req, res) => {
   }
 });
 
-// Full Watchtime Processing
+// Full Watchtime Processing for /run-watchtime POST
 app.post('/run-watchtime', async (req, res) => {
   try {
     const filePath = './watch-history.json';
@@ -38,7 +38,7 @@ app.post('/run-watchtime', async (req, res) => {
     const jsonData = JSON.parse(fileContent);
 
     const totalVideos = jsonData.length;
-    const topCreator = "Unknown"; // Future: Analyze most watched
+    const topCreator = "Unknown"; // Placeholder
 
     const prompt = `
     Based on the following YouTube Watchtime Data:
@@ -80,7 +80,7 @@ app.post('/run-watchtime', async (req, res) => {
 
     res.status(200).json(result);
   } catch (error) {
-    console.error('Error during /run-watchtime:', error.message);
+    console.error('Error during /run-watchtime POST:', error.message);
     res.status(500).json({ status: 'error', message: 'Internal server error', details: error.message });
   }
 });
@@ -95,7 +95,7 @@ app.get('/summary', async (req, res) => {
   }
 });
 
-// Get Top Creator
+// Get Top Creator (placeholder)
 app.get('/top-creator', (req, res) => {
   res.json({ topCreator: "Unknown (upgrade coming soon!)" });
 });
