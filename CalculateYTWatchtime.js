@@ -1,3 +1,7 @@
+import dotenv from 'dotenv';
+dotenv.config();
+import fs from 'fs';
+
 async function getVideoDurations(videoIds) 
 {
     const batchSize = 50; // API limit per request
@@ -52,8 +56,6 @@ async function getVideoDurations(videoIds)
     return queriedData;
 }
 
-const fs = require('fs');
-require('dotenv').config();
 
 // Utility to convert seconds to readable time
 function secondsToDhms(seconds) {
