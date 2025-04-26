@@ -4,7 +4,8 @@
   "description": "YouTube Watchtime Calculator API",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "npm install"
   },
   "dependencies": {
     "axios": "^1.9.0",
