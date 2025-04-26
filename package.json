@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A project for YouTube data analysis",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js"
   },
