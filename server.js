@@ -15,6 +15,61 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Root landing page
+app.get('/', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Watchtime API 🚀</title>
+      <style>
+        body {
+          background: #0f0f0f;
+          color: #f5f5f5;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+          text-align: center;
+        }
+        h1 {
+          font-size: 3rem;
+          color: #61dafb;
+        }
+        p {
+          font-size: 1.2rem;
+          color: #aaa;
+        }
+        a {
+          margin-top: 20px;
+          display: inline-block;
+          color: #61dafb;
+          text-decoration: none;
+          border: 1px solid #61dafb;
+          padding: 8px 16px;
+          border-radius: 4px;
+        }
+        a:hover {
+          background: #61dafb;
+          color: #0f0f0f;
+        }
+      </style>
+    </head>
+    <body>
+      <div>
+        <h1>🚀 Watchtime API is Live!</h1>
+        <p>Welcome to your live server. Everything is operational.</p>
+        <a href="/run-watchtime">Test Watchtime Endpoint</a>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
 // Run watchtime calculation
 app.get('/run-watchtime', async (req, res) => {
   try {
