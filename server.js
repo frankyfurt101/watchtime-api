@@ -5,7 +5,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
 import { parser } from 'stream-json';
-import { streamArray } from 'stream-json/streamers/StreamArray';
+import { streamArray } from 'stream-json/streamers/StreamArray.js';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import fsExtra from 'fs-extra';
