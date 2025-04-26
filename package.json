@@ -3,19 +3,18 @@
   "version": "1.0.0",
   "description": "A project for YouTube data analysis",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "start": "node server.js"
   },
   "author": "Franky Fernandez",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.9.0",
-    "dotenv": "^16.3.1",
     "express": "^4.17.1",
+    "mongoose": "^5.9.10",
+    "dotenv": "^16.3.1",
     "fs-extra": "^11.2.0",
-    "mongoose": "^8.14.0",
     "stream-json": "^1.7.5",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "axios": "^1.0.0"
   }
 }

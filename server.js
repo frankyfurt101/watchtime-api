@@ -4,10 +4,6 @@ import express from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
-import streamJsonPkg from 'stream-json';
-const { parser } = streamJsonPkg;
-import streamArrayPkg from 'stream-json/streamers/StreamArray.js';
-const { streamArray } = streamArrayPkg;
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import fsExtra from 'fs-extra';
@@ -19,10 +15,22 @@ const port = process.env.PORT || 10000;
 
 app.use(express.json());
 
+// Quick health check
 app.get('/', (req, res) => {
   res.send('🎬 Welcome to the YouTube Watchtime API!');
 });
 
+// HEALTHY fast /run-watchtime for SwiftUI
+app.get('/run-watchtime', async (req, res) => {
+  try {
+    res.status(200).json({ message: '✅ API is alive!' });
+  } catch (error) {
+    console.error('Quick health error:', error.message);
+    res.status(500).json({ status: 'error', message: 'Server health error', details: error.message });
+  }
+});
+
+// FULL run-watchtime process
 app.post('/run-watchtime', async (req, res) => {
   try {
     const filePath = './watch-history.json';
@@ -30,7 +38,7 @@ app.post('/run-watchtime', async (req, res) => {
     const jsonData = JSON.parse(file);
 
     const totalVideos = jsonData.length;
-    const topCreator = "Unknown"; // We will improve this later
+    const topCreator = "Unknown"; // We can upgrade later
 
     const prompt = `
     Based on the following YouTube Watchtime Data:
@@ -64,13 +72,11 @@ app.post('/run-watchtime', async (req, res) => {
       timestamp: new Date().toISOString()
     };
 
-    // Save backup
     const backupDir = path.join('./backups');
     await fsExtra.ensureDir(backupDir);
     const backupPath = path.join(backupDir, `backup-${uuidv4()}.json`);
     await fs.writeFile(backupPath, JSON.stringify(result, null, 2));
 
-    // Also save latest summary
     await fs.writeFile('./latest-summary.json', JSON.stringify(result, null, 2));
 
     res.status(200).json(result);
