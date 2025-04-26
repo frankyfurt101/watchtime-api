@@ -15,36 +15,36 @@ const port = process.env.PORT || 10000;
 
 app.use(express.json());
 
-// Quick health check
+// Health Check - Root
 app.get('/', (req, res) => {
   res.send('🎬 Welcome to the YouTube Watchtime API!');
 });
 
-// HEALTHY fast /run-watchtime for SwiftUI
+// Quick Health Check - SwiftUI friendly
 app.get('/run-watchtime', async (req, res) => {
   try {
     res.status(200).json({ message: '✅ API is alive!' });
   } catch (error) {
-    console.error('Quick health error:', error.message);
-    res.status(500).json({ status: 'error', message: 'Server health error', details: error.message });
+    console.error('Health check error:', error.message);
+    res.status(500).json({ status: 'error', message: 'Health error', details: error.message });
   }
 });
 
-// FULL run-watchtime process
+// Full Watchtime Processing
 app.post('/run-watchtime', async (req, res) => {
   try {
     const filePath = './watch-history.json';
-    const file = await fs.readFile(filePath, 'utf-8');
-    const jsonData = JSON.parse(file);
+    const fileContent = await fs.readFile(filePath, 'utf-8');
+    const jsonData = JSON.parse(fileContent);
 
     const totalVideos = jsonData.length;
-    const topCreator = "Unknown"; // We can upgrade later
+    const topCreator = "Unknown"; // Future: Analyze most watched
 
     const prompt = `
     Based on the following YouTube Watchtime Data:
     - Top Creator: ${topCreator}
     - Total Videos Watched: ${totalVideos}
-
+    
     Write a fun, energetic 2-3 sentence summary describing the user's YouTube habits!
     `;
 
@@ -62,7 +62,7 @@ app.post('/run-watchtime', async (req, res) => {
       }
     );
 
-    const aiSummary = openaiResponse.data.choices[0].message.content;
+    const aiSummary = openaiResponse.data.choices[0]?.message?.content || 'No summary generated.';
 
     const result = {
       status: 'success',
@@ -76,32 +76,31 @@ app.post('/run-watchtime', async (req, res) => {
     await fsExtra.ensureDir(backupDir);
     const backupPath = path.join(backupDir, `backup-${uuidv4()}.json`);
     await fs.writeFile(backupPath, JSON.stringify(result, null, 2));
-
     await fs.writeFile('./latest-summary.json', JSON.stringify(result, null, 2));
 
     res.status(200).json(result);
   } catch (error) {
-    console.error('Error processing watch history or generating AI summary:', error.message);
-    res.status(500).json({ status: 'error', message: 'Internal Server Error', details: error.message });
+    console.error('Error during /run-watchtime:', error.message);
+    res.status(500).json({ status: 'error', message: 'Internal server error', details: error.message });
   }
 });
 
-// Get latest summary
+// Get Latest Summary
 app.get('/summary', async (req, res) => {
   try {
-    const data = await fs.readFile('./latest-summary.json', 'utf-8');
-    const json = JSON.parse(data);
-    res.status(200).json(json);
+    const latest = await fs.readFile('./latest-summary.json', 'utf-8');
+    res.status(200).json(JSON.parse(latest));
   } catch (error) {
     res.status(404).json({ status: 'error', message: 'No summary available yet' });
   }
 });
 
-// Get top creator (future upgrade)
+// Get Top Creator
 app.get('/top-creator', (req, res) => {
-  res.json({ topCreator: "Unknown (coming soon!)" });
+  res.json({ topCreator: "Unknown (upgrade coming soon!)" });
 });
 
+// Start server
 app.listen(port, () => {
   console.log(`🎬 Watchtime server is live on port ${port}`);
 });
