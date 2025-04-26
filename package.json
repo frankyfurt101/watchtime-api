@@ -1,21 +1,20 @@
 {
-  "name": "watchtime-api",
+  "name": "youtube-project",
   "version": "1.0.0",
-  "description": "YouTube Watchtime Calculator API",
+  "description": "A project for YouTube data analysis",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
+  "author": "Franky Fernandez",
+  "license": "MIT",
   "dependencies": {
-    "axios": "^1.9.0",
-    "dotenv": "^16.5.0",
-    "express": "^4.21.2",
-    "node-fetch": "^3.3.2",
-    "stream-json": "^1.9.1",
-    "uuid": "^11.1.0"
-  },
-  "type": "module",
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "express": "^4.17.1",
+    "mongoose": "^5.9.10",
+    "dotenv": "^16.4.0",
+    "fs-extra": "^11.2.0",
+    "stream-json": "^1.7.5",
+    "uuid": "^9.0.1",
+    "axios": "^1.9.0"
+  }
 }
