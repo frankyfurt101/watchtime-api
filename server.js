@@ -40,10 +40,19 @@ app.get('/run-watchtime', (req, res) => {
     });
 });
 
-// Serve the summary text
-app.get('/summary', (req, res) => {
+// Serve the summary text with fallback
+app.get('/summary', async (req, res) => {
     const summaryPath = path.join(__dirname, 'watchtime_summary.txt');
-    res.sendFile(summaryPath);
+    try {
+        res.sendFile(summaryPath);
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            res.send("📊 No watchtime summary available yet.\n\nTry running a calculation first.");
+        } else {
+            console.error("Server error reading summary:", err);
+            res.status(500).send("⚠️ Server error occurred.");
+        }
+    }
 });
 
 app.listen(port, () => {
