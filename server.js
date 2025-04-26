@@ -2,6 +2,9 @@ import express from 'express';
 import fs from 'fs/promises'; // Use promises version
 import path from 'path';
 import { fileURLToPath } from 'url';
+import axios from 'axios';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -75,11 +78,9 @@ app.get('/run-watchtime', async (req, res) => {
   try {
     const watchHistoryPath = path.join(__dirname, 'src', 'data', 'watch-history.json');
 
-    // Read watch-history.json
     const data = await fs.readFile(watchHistoryPath, 'utf-8');
     const watchHistory = JSON.parse(data);
 
-    // Process the watch history
     const totalVideos = watchHistory.length;
 
     const creators = {};
@@ -90,16 +91,37 @@ app.get('/run-watchtime', async (req, res) => {
 
     const topCreator = Object.entries(creators).sort((a, b) => b[1] - a[1])[0];
 
-    // Response
+    // 🧠 Generate OpenAI Summary
+    const prompt = `
+    Based on the following YouTube Watchtime Data:
+    - Top Creator: ${topCreator ? topCreator[0] : 'None'}
+    - Total Videos Watched: ${totalVideos}
+
+    Write a fun, energetic 2-3 sentence summary describing the user's YouTube habits!
+    `;
+
+    const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: prompt }]
+    }, {
+      headers: {
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const aiSummary = response.data.choices[0].message.content.trim();
+
     res.json({
       totalVideos,
       topCreatorName: topCreator ? topCreator[0] : 'None',
       topCreatorCount: topCreator ? topCreator[1] : 0,
+      aiGeneratedSummary: aiSummary
     });
 
   } catch (error) {
-    console.error('Error processing watch history:', error);
-    res.status(500).json({ error: 'Failed to process watch history' });
+    console.error('Error processing watch history or generating AI summary:', error);
+    res.status(500).json({ error: 'Failed to process watch history or generate AI summary' });
   }
 });
 
