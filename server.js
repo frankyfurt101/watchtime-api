@@ -1,23 +1,41 @@
-const express = require('express');
-const { exec } = require('child_process');
-const cors = require('cors');
+import express from 'express';
+import dotenv from 'dotenv';
+import { exec } from 'child_process';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+dotenv.config();
+
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-// Allow your iPhone to connect
-app.use(cors());
+// Needed to resolve __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Health check for Render
+app.get('/health', (req, res) => {
+    res.send('Server is healthy!');
+});
+
+// Endpoint to trigger watchtime calculation
 app.get('/run-watchtime', (req, res) => {
     console.log('Received request to run watchtime calculation...');
-    exec('node /Users/frankyfernandez/Desktop/Youtube\\ Project/CalculateYTWatchtime.js', (error, stdout, stderr) => {
+    exec('node CalculateYTWatchtime.js', (error, stdout, stderr) => {
         if (error) {
             console.error(`Error running script: ${error.message}`);
-            res.status(500).send('❌ Failed to run watchtime calculation.');
+            res.status(500).send('❌ Watchtime calculation failed.');
             return;
         }
         console.log(`Output: ${stdout}`);
         res.send('✅ Watchtime calculation complete!');
     });
+});
+
+// Serve the summary text
+app.get('/summary', (req, res) => {
+    const summaryPath = path.join(__dirname, 'watchtime_summary.txt');
+    res.sendFile(summaryPath);
 });
 
 app.listen(port, () => {
