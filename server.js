@@ -13,9 +13,14 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Health check for Render
+// Pro Health Check for Render
 app.get('/health', (req, res) => {
-    res.send('Server is healthy!');
+    res.json({
+        status: 'ok',
+        uptime: process.uptime(),
+        message: 'Server is healthy!',
+        timestamp: Date.now()
+    });
 });
 
 // Endpoint to trigger watchtime calculation
