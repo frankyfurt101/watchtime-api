@@ -20,14 +20,17 @@ app.get('/health', (req, res) => {
 
 // Endpoint to trigger watchtime calculation
 app.get('/run-watchtime', (req, res) => {
-    console.log('Received request to run watchtime calculation...');
+    console.log('🟡 Received request to run watchtime calculation...');
     exec('node CalculateYTWatchtime.js', (error, stdout, stderr) => {
         if (error) {
-            console.error(`Error running script: ${error.message}`);
-            res.status(500).send('❌ Watchtime calculation failed.');
+            console.error(`❌ Error: ${error.message}`);
+            res.status(500).send(`❌ Watchtime calculation failed:\n${error.message}`);
             return;
         }
-        console.log(`Output: ${stdout}`);
+        if (stderr) {
+            console.warn(`⚠️ Stderr: ${stderr}`);
+        }
+        console.log(`✅ Output: ${stdout}`);
         res.send('✅ Watchtime calculation complete!');
     });
 });
